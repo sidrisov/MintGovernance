@@ -1,0 +1,11 @@
+We just walked through the entire flow in the unit test cases and can see how the governor standard works. Your goal is to now get this deployed and executed on the Goerli test network. You can do this by:
+ ✔ 1 Add a Goerli URL and private key to the hardhat config (here's the hardhat config docs) so that you can interact with the test network through Hardhat. @done(23-01-15 18:52)
+ ✔ 2 Re-configure MyGovernor to use a different voting period. A 1 block waiting period works for unit tests, but it would be too quick on goerli. This is the second argument passed to GovernorSettings. See the OpenZeppelin Wizard on how this is configured. @done(23-01-15 19:29)
+ ✔ 3 Once you've setup your goerli network, use the scripts/deploy.js script by running npx hardhat run scripts/deploy.js --network goerli. This should deploy the two contracts. @done(23-01-15 19:30)
+ ✔ 4 You'll need to build several more scripts to run through steps 2-5 above. Be sure to: @done(23-01-15 21:01)
+     ✔ 4.1 delegate the votes to yourself @done(23-01-15 19:49)
+     ✔ 4.2 create a proposal @done(23-01-15 20:09)
+     ✔ 4.3 vote on the proposal @done(23-01-15 20:17)
+     ✔ 4.4 execute the proposal @done(23-01-15 21:01)
+
+// When you are building the scripts to run through governance, make use of the ethers.getContractAt method which will allow you to specify a contract name and where it is deployed. This way you can build scripts that interact with the existing MyGovernor and MyToken contracts after you've deployed them.

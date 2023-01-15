@@ -1,6 +1,8 @@
 const { ethers } = require("hardhat");
 
 async function main() {
+  const [owner] = await ethers.getSigners();
+
   const transactionCount = await owner.getTransactionCount();
 
   // gets the address of the token before it is deployed
@@ -9,15 +11,15 @@ async function main() {
     nonce: transactionCount + 1
   });
 
-  const MyGovernor = await ethers.getContractFactory("MyGovernor");
-  const governor = await MyGovernor.deploy(futureAddress);
+  const CrimeanGovernor = await ethers.getContractFactory("CrimeanGovernor");
+  const governor = await CrimeanGovernor.deploy(futureAddress);
 
-  const MyToken = await ethers.getContractFactory("MyToken");
-  const token = await MyToken.deploy(governor.address);
+  const CrimeanToken = await ethers.getContractFactory("CrimeanToken");
+  const token = await CrimeanToken.deploy(governor.address);
 
   console.log(
     `Governor deployed to ${governor.address}`,
-    `Token deployed to ${token.address}`
+    `\nToken deployed to ${token.address}`
   );
 }
 

@@ -1,9 +1,9 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { loadFixture, mine } = require("@nomicfoundation/hardhat-network-helpers");
 const { assert } = require("chai");
 const { ethers } = require("hardhat");
 const { toUtf8Bytes, keccak256, parseEther } = ethers.utils;
 
-describe("MyGovernor", function () {
+describe("CrimeanGovernor", function () {
   async function deployFixture() {
     const [owner, otherAccount] = await ethers.getSigners();
 
@@ -15,11 +15,11 @@ describe("MyGovernor", function () {
       nonce: transactionCount + 1
     });
 
-    const MyGovernor = await ethers.getContractFactory("MyGovernor");
-    const governor = await MyGovernor.deploy(futureAddress);
+    const CrimeanGovernor = await ethers.getContractFactory("CrimeanGovernor");
+    const governor = await CrimeanGovernor.deploy(futureAddress);
 
-    const MyToken = await ethers.getContractFactory("MyToken");
-    const token = await MyToken.deploy(governor.address);
+    const CrimeanToken = await ethers.getContractFactory("CrimeanToken");
+    const token = await CrimeanToken.deploy(governor.address);
 
     await token.delegate(owner.address);
 
@@ -49,7 +49,7 @@ describe("MyGovernor", function () {
       const { proposalId } = event.args;
 
       // wait for the 1 block voting delay
-      await hre.network.provider.send("evm_mine");
+      await mine(1);
       
       return { ...deployValues, proposalId } 
     }
@@ -71,7 +71,7 @@ describe("MyGovernor", function () {
         const voteCastEvent = receipt.events.find(x => x.event === 'VoteCast');
         
         // wait for the 1 block voting period
-        await hre.network.provider.send("evm_mine");
+        await mine(1);
 
         return { ...proposingValues, voteCastEvent }
       }
@@ -85,6 +85,9 @@ describe("MyGovernor", function () {
 
       it("should allow executing the proposal", async () => {
         const { governor, token, owner } = await loadFixture(afterVotingFixture);
+
+        // wait for 25 blocks, so that proposal period ends and it can be executed
+        await mine(25);
 
         await governor.execute(
           [token.address],
